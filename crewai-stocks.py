@@ -23,7 +23,6 @@ from langchain.tools import Tool
 from langchain_openai import ChatOpenAI
 from langchain_community.tools import DuckDuckGoSearchResults
 from dotenv import load_dotenv
-from IPython.display import Markdown
 
 import yfinance as yf
 
