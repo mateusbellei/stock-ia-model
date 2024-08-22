@@ -10,6 +10,7 @@
 # !pip install langchain-community==0.0.38
 # !pip install duckduckgo-search==5.3.0
 # !pip install python-dotenv
+# !pip install streamlit
 
 # In[8]:
 
@@ -25,6 +26,8 @@ from dotenv import load_dotenv
 from IPython.display import Markdown
 
 import yfinance as yf
+
+import streamlit as st
 
 
 # In[9]:
@@ -50,7 +53,8 @@ search_tool = DuckDuckGoSearchResults(backend='news', num_results=10)
 
 # IMPORT OPENAI LLM - GPT
 load_dotenv()
-os.environ['OPENAI_API_KEY'] == os.getenv('OPENAI_API_KEY')
+#os.environ['OPENAI_API_KEY'] == os.getenv('OPENAI_API_KEY') #local
+os.environ['OPENAI_API_KEY'] == st.secrets['OPENAI_API_KEY']
 llm = ChatOpenAI(model="gpt-3.5-turbo")
 
 
@@ -132,7 +136,19 @@ crew = Crew(
 
 
 # In[14]:
+with st.sidebar:
+  st.header('Enter Ticket Stock')
 
+  with st.form(key='research_form'):
+    topic = st.text_input("Select the Ticket")
+    submit_button = st.form_submit_button(label = "Run Research")
 
-results = crew.kickoff(inputs={'ticket': 'AAPL'})
+if submit_button:
+  if not topic:
+    st.error("Please fill the ticket.")
+  else:
+    results = crew.kickoff(inputs={'ticket': topic})
+
+    st.subheader("Results:")
+    st.write(results['final_output'])
 
